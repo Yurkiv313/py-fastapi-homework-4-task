@@ -53,10 +53,11 @@ async def profile_user(
     if exist_profile:
         raise HTTPException(status_code=400, detail="User already has a profile.")
 
+    avatar_bytes = await form.avatar.read()
     avatar_key = f"avatars/{user_id}_avatar.jpg"
     avatar_url = ""
     try:
-        await s3_client.upload_file(avatar_key, form.avatar)
+        await s3_client.upload_file(avatar_key, avatar_bytes)
         avatar_url = await s3_client.get_file_url(avatar_key)
     except (S3ConnectionError, S3FileUploadError):
         raise HTTPException(status_code=500, detail="Failed to upload avatar. Please try again later.")
