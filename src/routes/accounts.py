@@ -120,9 +120,7 @@ async def register_user(
         activation_token = ActivationTokenModel(user_id=new_user.id)
         db.add(activation_token)
 
-        print("Committing user...")
         await db.commit()
-        print("Committed.")
         await db.refresh(new_user)
     except SQLAlchemyError as e:
         await db.rollback()
